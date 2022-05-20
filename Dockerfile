@@ -1,12 +1,11 @@
-FROM ubuntu:18.04 as builder
+FROM ubuntu:20.04 as builder
 
-# Set Virtuoso commit SHA to Virtuoso 7.2.6.1 release (2021-06-22)
+# Set Virtuoso commit SHA to Virtuoso 7.2.7 release (2022-05-18)
 ARG VIRTUOSO_COMMIT=64663f91c657aec14bbdcef8b6e5c9b6ac89cb8b
 
 RUN apt-get update
-# installing libssl1.0-dev instead of libssl1.1 as a Workaround for #663
 RUN apt-get install -y build-essential autotools-dev autoconf automake net-tools libtool \
-                       flex bison gperf gawk m4 libssl1.0-dev libreadline-dev openssl wget
+                       flex bison gperf gawk m4 libssl-dev libreadline-dev openssl wget
 RUN wget https://github.com/openlink/virtuoso-opensource/archive/${VIRTUOSO_COMMIT}.tar.gz
 RUN tar xzf ${VIRTUOSO_COMMIT}.tar.gz
 WORKDIR virtuoso-opensource-${VIRTUOSO_COMMIT}
@@ -29,9 +28,9 @@ RUN export CFLAGS="-O2 -m64" \
     && make && make install
 
 
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 COPY --from=builder /usr/local/virtuoso-opensource /usr/local/virtuoso-opensource
-RUN apt-get update && apt-get install -y libssl1.0-dev crudini
+RUN apt-get update && apt-get install -y libssl-dev crudini
 # Add Virtuoso bin to the PATH
 ENV PATH /usr/local/virtuoso-opensource/bin/:$PATH
 
