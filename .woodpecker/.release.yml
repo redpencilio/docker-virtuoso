@@ -1,0 +1,13 @@
+pipeline:
+  build-and-push:
+    image: plugins/docker
+    settings:
+      repo: redpencil/virtuoso
+      tags: latest
+      secrets: [docker_username, docker_password]
+      tags: ${CI_REPO_TAG##v} # strips v from the tag
+    when:
+      event: tag
+      tag: v*
+branches:
+  - master

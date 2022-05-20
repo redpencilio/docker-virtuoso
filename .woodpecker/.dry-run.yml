@@ -1,0 +1,9 @@
+pipeline:
+  build-and-push:
+    image: plugins/docker
+    settings:
+      repo: redpencil/virtuoso
+      dry_run: true
+    when:
+      event:
+        - pull_request
