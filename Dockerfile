@@ -1,7 +1,7 @@
 FROM ubuntu:20.04 as builder
 
 # Set Virtuoso commit SHA to Virtuoso 7.2.7 release (2022-05-18)
-ARG VIRTUOSO_COMMIT=64663f91c657aec14bbdcef8b6e5c9b6ac89cb8b
+ARG VIRTUOSO_COMMIT=031118cc2953117da5f3e7f2e2d33050c7e177ae
 
 RUN apt-get update
 RUN apt-get install -y build-essential autotools-dev autoconf automake net-tools libtool \
