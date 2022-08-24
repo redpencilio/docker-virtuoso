@@ -76,4 +76,5 @@ CREATE PROCEDURE dump_nquads
     dump_nquads ('dumps', 1, 100000000, 1);
     exit;
 EOF
-gunzip /project/data/db/dumps/*
+gunzip /project/data/db/dumps/*.gz
+cat /project/data/db/dumps/* > /project/data/dumped-quads.nq
