@@ -4,7 +4,7 @@ pipeline:
     secrets: [ docker_username, docker_password ]
     settings:
       repo: redpencil/virtuoso
-      tags: ${CI_COMMIT_SOURCE_BRANCH} # strips v from the tag
+      tags: "feature-${CI_COMMIT_SOURCE_BRANCH##feature/}"
     when:
       event:
         - push
