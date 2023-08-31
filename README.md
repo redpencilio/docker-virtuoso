@@ -31,6 +31,53 @@ db:
   ports:
     - "8890:8890"
 ```
+## Upgrading
+There are multiple ways of upgrading your virtuoso version. The procedure described here takes a bit longer, but will result in using all of the latest features of your new virtuoso version and optimizes your DB size on disk.
+
+NOTE: Upgrading virtuoso is a procedure to be done with great care, make sure to have backups before starting. 
+
+### 1. dump nquads
+When upgrading it's recommend (and sometimes required!) to first dump to quads using the `dump_nquads` procedure:
+```sh
+docker compose exec virtuoso isql-v
+SQL> dump_nquads ('dumps', 1, 1000000000, 1);
+```
+
+### 2. stop the db
+```sh
+docker compose stop virtuoso
+```
+### 3. remove old db and related files
+When this has completed move the dumps folder to the toLoad folder. Make sure to remove the following files:
+- `.data_loaded` 
+- `.dba_pwd_set`
+- `virtuoso.db`
+- `virtuoso.trx`
+- `virtuoso.pxa`
+- `virtuoso-temp.db`
+
+```sh
+mv data/db/dumps data/db/toLoad
+rm data/db/virtuoso.{db,trx,pxa} virtuoso-temp.db. .data_load .dba_pwd_set
+```
+
+Consider truncating or removing the virtuoso.log file as well. 
+
+### 4. update virtuoso version
+Modify the docker-compose file to update the virtuoso version
+
+```diff
+   virtuoso:
+-    image: redpencil/virtuoso:1.0.0
++    image: redpencil/virtuoso:1.2.0-rc.1
+```
+### 5. start the db
+Start the DB and monitor the logs, importing the nquads might take a long time .
+```sh
+docker compose up -d virtuoso
+docker compose logs -f virtuoso
+```
+After that your application can be started again and you should be good to go.
 
 ## Configuration
 ### dba password
