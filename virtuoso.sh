@@ -63,10 +63,16 @@ then
     echo "Start data loading from toLoad folder"
     graph="http://localhost:8890/DAV"
 
+    echo "Fetch checkpoint and scheduler intervals from virtuoso.ini"
+    checkpoint_interval=$(cat virtuoso.ini | grep -i checkpointinterval | cut -d '=' -f 2)
+    scheduler_interval=$(cat virtuoso.ini | grep -i schedulerinterval | cut -d '=' -f 2)
+
     if [ "$DEFAULT_GRAPH" ]; then graph="$DEFAULT_GRAPH" ; fi
     echo "ld_dir('toLoad', '*', '$graph');" >> /load_data.sql
     echo "rdf_loader_run();" >> /load_data.sql
     echo "exec('checkpoint');" >> /load_data.sql
+    echo "checkpoint_interval($checkpoint_interval);" >> /load_data.sql
+    echo "scheduler_interval($scheduler_interval);" >> /load_data.sql
     echo "WAIT_FOR_CHILDREN; " >> /load_data.sql
     echo "$(cat /load_data.sql)"
     virtuoso-t +configfile /tmp/virtuoso.ini +wait && isql-v -U dba -P "$VIRTUOSO_DB_PASSWORD" < /load_data.sql

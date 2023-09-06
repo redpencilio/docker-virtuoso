@@ -109,6 +109,11 @@ Make the quad `.nq` files available in `/my/path/to/the/virtuoso/db/dumps`. The 
     isql-v -U dba -P $DBA_PASSWORD
     SQL> ld_dir('dumps', '*.nq', 'http://foo.bar');
     SQL> rdf_loader_run();
+    SQL> checkpoint;
+    SQL> checkpoint_interval(N);
+    SQL> scheduler_interval(M);
+
+> Note: **N** and **M** should be fetched from your virtuoso.ini config by looking for **CheckpointInterval** and **SchedulerInterval** respectively.
 
 Validate the `ll_state` of the load. If `ll_state` is 2, the load completed.
 
