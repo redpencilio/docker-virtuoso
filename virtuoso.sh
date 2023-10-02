@@ -64,12 +64,12 @@ then
     graph="http://localhost:8890/DAV"
 
     if [ "$DEFAULT_GRAPH" ]; then graph="$DEFAULT_GRAPH" ; fi
-    echo "ld_dir('toLoad', '*', '$graph');" >> /load_data.sql
-    echo "rdf_loader_run();" >> /load_data.sql
-    echo "exec('checkpoint');" >> /load_data.sql
-    echo "WAIT_FOR_CHILDREN; " >> /load_data.sql
-    echo "$(cat /load_data.sql)"
-    virtuoso-t +configfile /tmp/virtuoso.ini +wait && isql-v -U dba -P "$VIRTUOSO_DB_PASSWORD" < /load_data.sql
+    echo "ld_dir('toLoad', '*', '$graph');" >> /tmp/load_data.sql
+    echo "rdf_loader_run();" >> /tmp/load_data.sql
+    echo "exec('checkpoint');" >> /tmp/load_data.sql
+    echo "WAIT_FOR_CHILDREN; " >> /tmp/load_data.sql
+    echo "$(cat /tmp/load_data.sql)"
+    virtuoso-t +configfile /tmp/virtuoso.ini +wait && isql-v -U dba -P "$VIRTUOSO_DB_PASSWORD" < /tmp/load_data.sql
     kill $(ps aux | grep '[v]irtuoso-t' | awk '{print $2}')
     echo "`date +%Y-%m-%dT%H:%M:%S%:z`" > .data_loaded
 fi
