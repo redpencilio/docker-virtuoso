@@ -71,9 +71,9 @@ then
     echo "ld_dir('toLoad', '*', '$graph');" >> /tmp/load_data.sql
     echo "rdf_loader_run();" >> /tmp/load_data.sql
     echo "exec('checkpoint');" >> /tmp/load_data.sql
-    echo "WAIT_FOR_CHILDREN; " >> /tmp/load_data.sql
     echo "checkpoint_interval($checkpoint_interval);" >> /tmp/load_data.sql
-    echo "scheduler_interval($scheduler_interval);" >> /tmp/load_data.sql    
+    echo "scheduler_interval($scheduler_interval);" >> /tmp/load_data.sql  
+    echo "WAIT_FOR_CHILDREN; " >> /tmp/load_data.sql    
     echo "$(cat /tmp/load_data.sql)"
     virtuoso-t +configfile /tmp/virtuoso.ini +wait && isql-v -U dba -P "$VIRTUOSO_DB_PASSWORD" < /tmp/load_data.sql
     kill $(ps aux | grep '[v]irtuoso-t' | awk '{print $2}')
