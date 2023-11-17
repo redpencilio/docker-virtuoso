@@ -58,7 +58,7 @@ When this has completed move the dumps folder to the toLoad folder. Make sure to
 
 ```sh
 mv data/db/dumps data/db/toLoad
-rm data/db/virtuoso.{db,trx,pxa} virtuoso-temp.db. .data_load .dba_pwd_set
+rm data/db/virtuoso.{db,trx,pxa} data/db/virtuoso-temp.db data/db/.data_loaded data/db/.dba_pwd_set
 ```
 
 Consider truncating or removing the virtuoso.log file as well. 
