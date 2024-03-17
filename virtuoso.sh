@@ -49,10 +49,10 @@ fi
 
 if [ ! -f ".dba_pwd_set" ];
 then
-  touch /sql-query.sql
-  if [ "$DBA_PASSWORD" ]; then echo "user_set_password('dba', '$DBA_PASSWORD');" >> /sql-query.sql ; fi
-  if [ "$SPARQL_UPDATE" = "true" ]; then echo "GRANT SPARQL_UPDATE to \"SPARQL\";" >> /sql-query.sql ; fi
-  virtuoso-t +configfile /tmp/virtuoso.ini +wait && isql-v -U dba -P dba < /docker-virtuoso/dump_nquads_procedure.sql && isql-v -U dba -P dba < /sql-query.sql
+  touch /tmp/sql-query.sql
+  if [ "$DBA_PASSWORD" ]; then echo "user_set_password('dba', '$DBA_PASSWORD');" >> /tmp/sql-query.sql ; fi
+  if [ "$SPARQL_UPDATE" = "true" ]; then echo "GRANT SPARQL_UPDATE to \"SPARQL\";" >> /tmp/sql-query.sql ; fi
+  virtuoso-t +configfile /tmp/virtuoso.ini +wait && isql-v -U dba -P dba < /docker-virtuoso/dump_nquads_procedure.sql && isql-v -U dba -P dba < /tmp/sql-query.sql
   kill "$(ps aux | grep '[v]irtuoso-t' | awk '{print $2}')"
   echo "`date +%Y-%m-%dT%H:%M:%S%:z`" >  .dba_pwd_set
 fi
@@ -64,12 +64,12 @@ then
     graph="http://localhost:8890/DAV"
 
     if [ "$DEFAULT_GRAPH" ]; then graph="$DEFAULT_GRAPH" ; fi
-    echo "ld_dir('toLoad', '*', '$graph');" >> /load_data.sql
-    echo "rdf_loader_run();" >> /load_data.sql
-    echo "exec('checkpoint');" >> /load_data.sql
-    echo "WAIT_FOR_CHILDREN; " >> /load_data.sql
-    echo "$(cat /load_data.sql)"
-    virtuoso-t +configfile /tmp/virtuoso.ini +wait && isql-v -U dba -P "$VIRTUOSO_DB_PASSWORD" < /load_data.sql
+    echo "ld_dir('toLoad', '*', '$graph');" >> /tmp/load_data.sql
+    echo "rdf_loader_run();" >> /tmp/load_data.sql
+    echo "exec('checkpoint');" >> /tmp/load_data.sql
+    echo "WAIT_FOR_CHILDREN; " >> /tmp/load_data.sql
+    echo "$(cat /tmp/load_data.sql)"
+    virtuoso-t +configfile /tmp/virtuoso.ini +wait && isql-v -U dba -P "$VIRTUOSO_DB_PASSWORD" < /tmp/load_data.sql
     kill $(ps aux | grep '[v]irtuoso-t' | awk '{print $2}')
     echo "`date +%Y-%m-%dT%H:%M:%S%:z`" > .data_loaded
 fi
@@ -77,11 +77,11 @@ fi
 if [ "$SPARQL_UPDATE" = "true" ];
 then
     echo "WARNING: applying user rights workaround"
-    echo "DB.DBA.RDF_DEFAULT_USER_PERMS_SET ('nobody', 7);" > /sql-query.sql
-    echo "grant execute on DB.DBA.L_O_LOOK_NE to SPARQL_UPDATE;" >> /sql-query.sql
-    echo "shutdown();" >> /sql-query.sql
-    virtuoso-t +configfile /tmp/virtuoso.ini +wait && isql-v -U dba -P "$VIRTUOSO_DB_PASSWORD" < /sql-query.sql
-    rm /sql-query.sql
+    echo "DB.DBA.RDF_DEFAULT_USER_PERMS_SET ('nobody', 7);" > /tmp/sql-query.sql
+    echo "grant execute on DB.DBA.L_O_LOOK_NE to SPARQL_UPDATE;" >> /tmp/sql-query.sql
+    echo "shutdown();" >> /tmp/sql-query.sql
+    virtuoso-t +configfile /tmp/virtuoso.ini +wait && isql-v -U dba -P "$VIRTUOSO_DB_PASSWORD" < /tmp/sql-query.sql
+    rm /tmp/sql-query.sql
 fi
 
 
