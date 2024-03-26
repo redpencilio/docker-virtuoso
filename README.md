@@ -37,7 +37,7 @@ There are multiple ways of upgrading your virtuoso version. The procedure descri
 NOTE: Upgrading virtuoso is a procedure to be done with great care, make sure to have backups before starting. 
 
 ### 1. dump nquads
-When upgrading it's recommend (and sometimes required!) to first dump to quads using the `dump_nquads` procedure:
+When upgrading it's recommended (and sometimes required!) to first dump to quads using the `dump_nquads` procedure:
 ```sh
 docker compose exec virtuoso isql-v
 SQL> dump_nquads ('dumps', 1, 1000000000, 1);
@@ -57,7 +57,7 @@ When this has completed move the dumps folder to the toLoad folder. Make sure to
 - `virtuoso-temp.db`
 
 ```sh
-mv data/db/dumps data/db/toLoad
+mv data/db/dumps/* data/db/toLoad
 rm data/db/virtuoso.{db,trx,pxa} data/db/virtuoso-temp.db data/db/.data_loaded data/db/.dba_pwd_set
 ```
 
