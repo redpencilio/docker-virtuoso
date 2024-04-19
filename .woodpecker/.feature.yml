@@ -5,7 +5,7 @@ pipeline:
     settings:
       repo: redpencil/virtuoso
       tags: ${CI_COMMIT_SOURCE_BRANCH/\//-}
-      platforms: linux/amd64,linux/arm64
+      platforms: linux/amd64
 when:
   event:
     - pull_request

@@ -7,7 +7,31 @@ ARG VIRTUOSO_COMMIT=f3d88f16bca4274265160e098be3ba3c7d68341c
 
 RUN apt-get update
 RUN apt-get install -y build-essential autotools-dev autoconf automake net-tools libtool \
-                       flex bison gperf gawk m4 libssl-dev libreadline-dev openssl wget
+                       flex bison gperf gawk m4 libssl-dev libreadline-dev openssl wget bzip2
+
+# Build libraries for GeoSPARQL support according to https://github.com/openlink/virtuoso-opensource/blob/10b2678ca4a801e75bc654a656017c3cfc0d8760/README.GeoSPARQL.md
+# proj4
+RUN wget https://download.osgeo.org/proj/proj-4.9.3.tar.gz
+RUN tar xzf proj-4.9.3.tar.gz
+WORKDIR proj-4.9.3
+RUN ./configure
+RUN make
+RUN make install
+
+# geos
+WORKDIR ../
+RUN wget http://download.osgeo.org/geos/geos-3.5.1.tar.bz2
+RUN bzip2 -d geos-3.5.1.tar.bz2
+RUN ls -a
+RUN tar xf geos-3.5.1.tar
+WORKDIR geos-3.5.1
+RUN ./configure
+RUN make
+RUN make check
+RUN make install
+RUN ldconfig
+
+WORKDIR ../
 RUN wget https://github.com/openlink/virtuoso-opensource/archive/${VIRTUOSO_COMMIT}.tar.gz
 RUN tar xzf ${VIRTUOSO_COMMIT}.tar.gz
 WORKDIR virtuoso-opensource-${VIRTUOSO_COMMIT}
@@ -20,6 +44,9 @@ RUN case "$TARGETPLATFORM" in \
       *) export CFLAGS="-O" ;; \
     esac \
     && ./configure \
+        --enable-proj4=/usr/local/lib \
+        --enable-geos=/usr/local/lib \
+        --enable-shapefileio \
         --disable-graphql \
         --disable-bpel-vad \
         --enable-conductor-vad \
@@ -37,6 +64,7 @@ RUN make && make install
 
 FROM ubuntu:22.04
 COPY --from=builder /usr/local/virtuoso-opensource /usr/local/virtuoso-opensource
+COPY --from=builder /usr/local/lib/ /usr/local/lib
 RUN apt-get update && apt-get install -y libssl-dev crudini
 # Add Virtuoso bin to the PATH
 ENV PATH /usr/local/virtuoso-opensource/bin/:$PATH
