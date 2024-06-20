@@ -2,9 +2,9 @@ pipeline:
   build-and-push:
     image: woodpeckerci/plugin-docker-buildx
     settings:
-      repo: redpencil/virtuoso
-      dry_run: true
+      repo: ${CI_REPO_OWNER/redpencilio/redpencil}/virtuoso
       platforms: linux/amd64,linux/arm64
+      dry_run: true
+      purge: true
 when:
-  event:
-    - pull_request
+  - event: pull_request
