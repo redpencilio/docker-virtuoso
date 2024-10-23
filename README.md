@@ -140,7 +140,7 @@ docker exec -i virtuoso_container isql-v <<EOF
 Backups can be restored either in the running container, or through an environment variable. The existing database data must be removed before restoring a backup. You can do this using the following command:
 
 ```sh
-rm data/db/virtuoso.{db,trx,pxa} data/db/virtuoso-temp.db data/db/.data_loaded data/db/.dba_pwd_set
+rm data/db/virtuoso.{db,trx,pxa} data/db/virtuoso-temp.db data/db/.data_loaded data/db/.dba_pwd_set data/db/.backup_restored
 ```
 
 Caveat: The following commands mention `backup_` as the base prefix for the backups, this is the whole filename up to (but not including) the ending number and filename extension.  Eg: for a backup including the file `virtuoso_backup_240822T0200-101.bp`, the prefix is `virtuoso_backup_240822T0200-`.
