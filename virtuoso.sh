@@ -74,13 +74,16 @@ then
     echo "`date +%Y-%m-%dT%H:%M:%S%:z`" > .data_loaded
 fi
 
-if [ "$SPARQL_UPDATE" = "true" ];
+if [[ "$SPARQL_UPDATE" = "true" && ! -f "$SETTINGS_DIR/.user-rights-applied" ]];
 then
     echo "WARNING: applying user rights workaround"
+    # disable checkpoint audit trail to make sure checkpoints remain consistent
+    crudini --set /tmp/virtuoso.ini Parameters CheckpointAuditTrail 0
     echo "DB.DBA.RDF_DEFAULT_USER_PERMS_SET ('nobody', 7);" > /sql-query.sql
     echo "grant execute on DB.DBA.L_O_LOOK_NE to SPARQL_UPDATE;" >> /sql-query.sql
     echo "shutdown();" >> /sql-query.sql
     virtuoso-t +configfile /tmp/virtuoso.ini +wait && isql-v -U dba -P "$VIRTUOSO_DB_PASSWORD" < /sql-query.sql
+    touch "$SETTINGS_DIR/.user-rights-applied"
     rm /sql-query.sql
 fi
 
