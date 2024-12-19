@@ -1,0 +1,12 @@
+pipeline:
+  build-amd64-and-push-tag:
+    image: woodpeckerci/plugin-docker-buildx
+    secrets: [ docker_username, docker_password ]
+    settings:
+      repo: redpencil/virtuoso
+      tags: ${DOCKER_TAG}
+      platforms: linux/amd64
+
+when:
+  event:
+    - manual
