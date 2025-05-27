@@ -1,5 +1,5 @@
-pipeline:
-  build-and-push:
+steps:
+  dry-run:
     image: woodpeckerci/plugin-docker-buildx
     settings:
       repo: ${CI_REPO_OWNER/redpencilio/redpencil}/virtuoso
