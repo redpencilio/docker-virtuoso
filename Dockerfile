@@ -33,9 +33,9 @@ RUN if [ "$TARGETPLATFORM" != "linux/arm64" ]; then \
     fi
 
 RUN wget https://github.com/openlink/virtuoso-opensource/archive/${VIRTUOSO_COMMIT}.tar.gz && \
-    tar xzf ${VIRTUOSO_COMMIT}.tar.gz && \
-    cd virtuoso-opensource-${VIRTUOSO_COMMIT}
+    tar xzf ${VIRTUOSO_COMMIT}.tar.gz
 
+WORKDIR virtuoso-opensource-${VIRTUOSO_COMMIT}
 # Build virtuoso from source
 RUN ./autogen.sh && \
     case "$TARGETPLATFORM" in \
@@ -60,6 +60,7 @@ RUN ./autogen.sh && \
         --disable-tutorial-vad \
         --with-readline --program-transform-name="s/isql/isql-v/" && \
     make && make install
+
 FROM ubuntu:22.04
 COPY --from=builder /usr/local/virtuoso-opensource /usr/local/virtuoso-opensource
 COPY --from=builder /usr/local/lib/ /usr/local/lib
