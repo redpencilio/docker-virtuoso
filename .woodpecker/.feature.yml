@@ -1,5 +1,5 @@
 steps:
-  build-and-push:
+  build-and-push-feature:
     image: woodpeckerci/plugin-docker-buildx
     settings:
       repo: ${CI_REPO_OWNER/redpencilio/redpencil}/virtuoso
@@ -11,6 +11,5 @@ steps:
       password:
         from_secret: docker_password
 when:
-  event:
-    - pull_request
-  branch: [feature/*]
+  - event: push
+    branch: [feature/*]
