@@ -2,8 +2,8 @@ FROM ubuntu:22.04 as builder
 
 ARG TARGETPLATFORM
 
-# Set Virtuoso commit SHA to Virtuoso 7.2.13 release (2024-06-10)
-ARG VIRTUOSO_COMMIT=a1fd8195bf1140797fefb7d0961c55739c0dd0d8
+# Set Virtuoso commit SHA to Virtuoso 7.2.15 release (2025-05-21)
+ARG VIRTUOSO_COMMIT=bae7c13af8f4cb5ca0ecbaa9c4cda7f1b5f47f07
 
 RUN apt-get update
 RUN apt-get install -y build-essential autotools-dev autoconf automake net-tools libtool \
