@@ -2,7 +2,7 @@
 Docker for hosting Virtuoso.
 
 The Virtuoso is built from a specific commit SHA in https://github.com/openlink/virtuoso-opensource.
-This image is currently build from commit [a1fd8195bf1140797fefb7d0961c55739c0dd0d8](https://github.com/openlink/virtuoso-opensource/commit/a1fd8195bf1140797fefb7d0961c55739c0dd0d8), which corresponds to virtuoso 7.2.13. You can build this image from a different commit by providing the correct commit id as the `VIRTUOSO_COMMIT` [build argument](https://docs.docker.com/engine/reference/commandline/build/#set-build-time-variables---build-arg).
+This image is currently build from commit [bae7c13af8f4cb5ca0ecbaa9c4cda7f1b5f47f07](https://github.com/openlink/virtuoso-opensource/commit/bae7c13af8f4cb5ca0ecbaa9c4cda7f1b5f47f07), which corresponds to virtuoso 7.2.15. You can build this image from a different commit by providing the correct commit id as the `VIRTUOSO_COMMIT` [build argument](https://docs.docker.com/engine/reference/commandline/build/#set-build-time-variables---build-arg).
 
 ## Running your Virtuoso
     docker run --name my-virtuoso \
@@ -69,7 +69,7 @@ Modify the docker-compose file to update the virtuoso version
 ```diff
    virtuoso:
 -    image: redpencil/virtuoso:1.0.0
-+    image: redpencil/virtuoso:1.2.0-rc.1
++    image: redpencil/virtuoso:1.3.0
 ```
 ### 5. start the db
 Start the DB and monitor the logs, importing the nquads might take a long time .
