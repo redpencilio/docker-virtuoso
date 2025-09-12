@@ -3,6 +3,38 @@
   "scripts": [
     {
       "documentation": {
+        "command": "data-diff",
+        "description": "A data diff will be taken of the data resulting from a grep on each file. Parameters:\n  config: the config file to use\n",
+        "arguments": ["config"]
+      },
+      "environment": {
+        "image": "ubuntu",
+        "interactive": false,
+        "script": "virtuoso/data-diff.sh",
+        "join_networks": true
+      },
+      "mounts": {
+          "app": "/project/"
+        }
+    },
+    {
+      "documentation": {
+        "command": "dump-database",
+        "description": "A virtuoso dump will be created db/dumpss.\n Parameters:\n  hostname: default triplestore\n  username: default dba\n  password: default dba",
+        "arguments": ["hostname", "username", "password"]
+      },
+      "environment": {
+        "image": "redpencil/virtuoso",
+        "interactive": false,
+        "script": "virtuoso/dump-database.sh",
+        "join_networks": true
+      },
+      "mounts": {
+          "app": "/project/"
+        }
+    },
+    {
+      "documentation": {
         "command": "create-backup",
         "description": "A virtuoso backup will be created db/backups.\n Parameters:\n  prefix: default backup_${DATE}\n  hostname: default triplestore\n  username: default dba\n  password: default dba",
         "arguments": ["prefix", "hostname", "username", "password"]
