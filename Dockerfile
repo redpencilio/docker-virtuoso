@@ -8,7 +8,9 @@ ARG VIRTUOSO_COMMIT=bae7c13af8f4cb5ca0ecbaa9c4cda7f1b5f47f07
 RUN apt-get update && \
     apt-get install -y build-essential autotools-dev autoconf automake net-tools libtool \
                        flex bison gperf gawk m4 libssl-dev libreadline-dev openssl wget \
-                       python-is-python3 bzip2
+                       python-is-python3 bzip2 patch
+RUN wget https://github.com/openlink/virtuoso-opensource/archive/${VIRTUOSO_COMMIT}.tar.gz
+RUN tar xzf ${VIRTUOSO_COMMIT}.tar.gz
 
 # Build libraries for GeoSPARQL support if not on ARM
 RUN if [ "$TARGETPLATFORM" != "linux/arm64" ]; then \
@@ -34,8 +36,10 @@ RUN if [ "$TARGETPLATFORM" != "linux/arm64" ]; then \
 
 RUN wget https://github.com/openlink/virtuoso-opensource/archive/${VIRTUOSO_COMMIT}.tar.gz && \
     tar xzf ${VIRTUOSO_COMMIT}.tar.gz
-
+COPY sparql_core.patch /sparql_core.patch
 WORKDIR virtuoso-opensource-${VIRTUOSO_COMMIT}
+RUN patch -p1 < /sparql_core.patch
+
 # Build virtuoso from source
 RUN ./autogen.sh && \
     case "$TARGETPLATFORM" in \
