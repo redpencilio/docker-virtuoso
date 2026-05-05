@@ -10,7 +10,9 @@ RUN apt-get install -y build-essential autotools-dev autoconf automake net-tools
                        flex bison gperf gawk m4 libssl-dev libreadline-dev openssl wget
 RUN wget https://github.com/openlink/virtuoso-opensource/archive/${VIRTUOSO_COMMIT}.tar.gz
 RUN tar xzf ${VIRTUOSO_COMMIT}.tar.gz
+COPY patch_sparql.py /patch_sparql.py
 WORKDIR virtuoso-opensource-${VIRTUOSO_COMMIT}
+RUN python3 /patch_sparql.py
 
 # Build virtuoso from source
 RUN ./autogen.sh
@@ -31,8 +33,9 @@ RUN case "$TARGETPLATFORM" in \
         --disable-sparqldemo-vad \
         --disable-syncml-vad \
         --disable-tutorial-vad \
-        --with-readline --program-transform-name="s/isql/isql-v/"
-RUN make && make install
+        --with-readline --program-transform-name="s/isql/isql-v/" \
+    && make \
+    && make install
 
 
 FROM ubuntu:22.04
