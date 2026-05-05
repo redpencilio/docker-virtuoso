@@ -8,10 +8,12 @@ ARG VIRTUOSO_COMMIT=a1fd8195bf1140797fefb7d0961c55739c0dd0d8
 RUN apt-get update
 RUN apt-get install -y build-essential autotools-dev autoconf automake net-tools libtool \
                        flex bison gperf gawk m4 libssl-dev libreadline-dev openssl wget \
-                       python-is-python3
+                       python-is-python3 patch
 RUN wget https://github.com/openlink/virtuoso-opensource/archive/${VIRTUOSO_COMMIT}.tar.gz
 RUN tar xzf ${VIRTUOSO_COMMIT}.tar.gz
+COPY sparql_core.patch /sparql_core.patch
 WORKDIR virtuoso-opensource-${VIRTUOSO_COMMIT}
+RUN patch -p1 < /sparql_core.patch
 
 # Build virtuoso from source
 RUN ./autogen.sh
