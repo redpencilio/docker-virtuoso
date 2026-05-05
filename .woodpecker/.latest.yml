@@ -1,11 +1,17 @@
-pipeline:
+steps:
   build-and-push-latest:
     image: woodpeckerci/plugin-docker-buildx
-    secrets: [ docker_username, docker_password ]
     settings:
-      repo: redpencil/virtuoso
+      repo: ${CI_REPO_OWNER/redpencilio/redpencil}/virtuoso
+      tags: latest
       platforms: linux/amd64,linux/arm64
+      purge: true
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+
 when:
-  event:
-    - push
-  branch: master
+  # all events except pull_request
+  - event: [push, manual]
+    branch: [master]

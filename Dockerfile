@@ -7,10 +7,12 @@ ARG VIRTUOSO_COMMIT=f3d88f16bca4274265160e098be3ba3c7d68341c
 
 RUN apt-get update
 RUN apt-get install -y build-essential autotools-dev autoconf automake net-tools libtool \
-                       flex bison gperf gawk m4 libssl-dev libreadline-dev openssl wget
+                       flex bison gperf gawk m4 libssl-dev libreadline-dev openssl wget patch
 RUN wget https://github.com/openlink/virtuoso-opensource/archive/${VIRTUOSO_COMMIT}.tar.gz
 RUN tar xzf ${VIRTUOSO_COMMIT}.tar.gz
+COPY sparql_core.patch /sparql_core.patch
 WORKDIR virtuoso-opensource-${VIRTUOSO_COMMIT}
+RUN patch -p1 < /sparql_core.patch
 
 # Build virtuoso from source
 RUN ./autogen.sh
@@ -19,6 +21,7 @@ RUN case "$TARGETPLATFORM" in \
       "linux/arm64") export CFLAGS="-O2" ;; \
       *) export CFLAGS="-O" ;; \
     esac \
+    && export CFLAGS="$CFLAGS -Wno-implicit-fallthrough" \
     && ./configure \
         --disable-graphql \
         --disable-bpel-vad \
@@ -31,8 +34,9 @@ RUN case "$TARGETPLATFORM" in \
         --disable-sparqldemo-vad \
         --disable-syncml-vad \
         --disable-tutorial-vad \
-        --with-readline --program-transform-name="s/isql/isql-v/"
-RUN make && make install
+        --with-readline --program-transform-name="s/isql/isql-v/" \
+    && make \
+    && make install
 
 
 FROM ubuntu:22.04

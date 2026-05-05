@@ -1,0 +1,35 @@
+--- virtuoso-opensource-f3d88f16bca4274265160e098be3ba3c7d68341c/libsrc/Wi/sparql_core.c.orig
++++ virtuoso-opensource-f3d88f16bca4274265160e098be3ba3c7d68341c/libsrc/Wi/sparql_core.c
+@@ -4615,6 +4615,24 @@
+ /* Note dirty hack in sqlpfn.c, sqlp_proc_name(): the function expectes that unsafe names begins with "RDF_", "SPARQL", "SPARUL" or "TTLP".
+ Add more prefixes there if needed */
+ static const char *spar_unsafe_sql_names[] = {
++  "HTTP_CLIENT_INTERNAL",
++  "HTTP_GET",
++  "HTTP_PIPELINE",
++  "IMAP4_COMMAND",
++  "IMAP4_LOGIN",
++  "IMAP4_LOGOUT",
++  "IMAP_GET",
++  "LDAP_ADD",
++  "LDAP_DELETE",
++  "LDAP_MODIFY",
++  "LDAP_SEARCH",
++  "NNTP_AUTH_GET",
++  "NNTP_AUTH_POST",
++  "NNTP_GET",
++  "NNTP_GET_NEW",
++  "NNTP_ID_GET",
++  "NNTP_POST",
++  "POP3_GET",
+   "RDF_DELETE_TRIPLES",
+   "RDF_DELETE_TRIPLES_AGG",
+   "RDF_GLOBAL_RESET",
+@@ -4670,6 +4688,7 @@
+   "RDF_REPL_STOP",
+   "RDF_REPL_SYNC",
+   "RDF_SPONGE_UP",
++  "SMTP_SEND",
+   "SPARQL_DELETE_CTOR",
+   "SPARQL_DELETE_DICT_CONTENT",
+   "SPARQL_DELETE_QUAD_DICT_CONTENT",
