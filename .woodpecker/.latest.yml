@@ -1,6 +1,6 @@
 steps:
   build-and-push-latest:
-    image: woodpeckerci/plugin-docker-buildx
+    image: redpencil/plugin-docker-buildx
     settings:
       repo: ${CI_REPO_OWNER/redpencilio/redpencil}/virtuoso
       tags: latest
@@ -10,7 +10,8 @@ steps:
         from_secret: docker_username
       password:
         from_secret: docker_password
-
+      ssh_key:
+        from_secret: ssh_key
 when:
   # all events except pull_request
   - event: [push, manual]
