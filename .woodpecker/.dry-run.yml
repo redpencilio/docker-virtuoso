@@ -1,10 +1,12 @@
 steps:
   dry-run:
-    image: woodpeckerci/plugin-docker-buildx
+    image: redpencil/plugin-docker-buildx
     settings:
       repo: ${CI_REPO_OWNER/redpencilio/redpencil}/virtuoso
       platforms: linux/amd64,linux/arm64
       dry_run: true
       purge: true
+      ssh_key:
+        from_secret: ssh_key
 when:
   - event: manual
