@@ -1,9 +1,9 @@
-FROM ubuntu:22.04 AS builder
+FROM ubuntu:24.04 AS builder
 
 ARG TARGETPLATFORM
 
-# Set Virtuoso commit SHA to Virtuoso 7.2.15 release (2025-05-21)
-ARG VIRTUOSO_COMMIT=bae7c13af8f4cb5ca0ecbaa9c4cda7f1b5f47f07
+# Set Virtuoso commit SHA to Virtuoso 7.2.17 release (2026-05-01)
+ARG VIRTUOSO_COMMIT=ad6589ff38488183a35dfe8ba398233c3380b5ba
 
 RUN apt-get update && \
     apt-get install -y build-essential autotools-dev autoconf automake net-tools libtool \
@@ -36,9 +36,7 @@ RUN if [ "$TARGETPLATFORM" != "linux/arm64" ]; then \
 
 RUN wget https://github.com/openlink/virtuoso-opensource/archive/${VIRTUOSO_COMMIT}.tar.gz && \
     tar xzf ${VIRTUOSO_COMMIT}.tar.gz
-COPY sparql_core.patch /sparql_core.patch
 WORKDIR virtuoso-opensource-${VIRTUOSO_COMMIT}
-RUN patch -p1 < /sparql_core.patch
 
 # Build virtuoso from source
 RUN ./autogen.sh && \
@@ -65,7 +63,7 @@ RUN ./autogen.sh && \
         --with-readline --program-transform-name="s/isql/isql-v/" && \
     make && make install
 
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 COPY --from=builder /usr/local/virtuoso-opensource /usr/local/virtuoso-opensource
 COPY --from=builder /usr/local/lib/ /usr/local/lib
 RUN apt-get update && apt-get install -y libssl-dev crudini

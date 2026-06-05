@@ -2,7 +2,7 @@
 Docker for hosting Virtuoso.
 
 The Virtuoso is built from a specific commit SHA in https://github.com/openlink/virtuoso-opensource.
-This image is currently build from commit [bae7c13af8f4cb5ca0ecbaa9c4cda7f1b5f47f07](https://github.com/openlink/virtuoso-opensource/commit/bae7c13af8f4cb5ca0ecbaa9c4cda7f1b5f47f07), which corresponds to virtuoso 7.2.15. You can build this image from a different commit by providing the correct commit id as the `VIRTUOSO_COMMIT` [build argument](https://docs.docker.com/engine/reference/commandline/build/#set-build-time-variables---build-arg).
+This image is currently build from commit [ad6589ff38488183a35dfe8ba398233c3380b5ba](https://github.com/openlink/virtuoso-opensource/commit/ad6589ff38488183a35dfe8ba398233c3380b5ba), which corresponds to virtuoso 7.2.17. You can build this image from a different commit by providing the correct commit id as the `VIRTUOSO_COMMIT` [build argument](https://docs.docker.com/engine/reference/commandline/build/#set-build-time-variables---build-arg).
 
 ## Running your Virtuoso
     docker run --name my-virtuoso \
@@ -22,7 +22,7 @@ The image can also be configured and used via docker-compose.
 
 ```
 db:
-  image: redpencil/virtuoso:1.0.0
+  image: redpencil/virtuoso:1.4.0
   environment:
     SPARQL_UPDATE: "true"
     DEFAULT_GRAPH: "http://www.example.com/my-graph"
@@ -69,7 +69,7 @@ Modify the docker-compose file to update the virtuoso version
 ```diff
    virtuoso:
 -    image: redpencil/virtuoso:1.0.0
-+    image: redpencil/virtuoso:1.3.0
++    image: redpencil/virtuoso:1.4.0
 ```
 ### 5. start the db
 Start the DB and monitor the logs, importing the nquads might take a long time .
