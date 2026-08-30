@@ -1,0 +1,7 @@
+{ "source": "/project/data/file1.nq",
+  "target": "/project/data/file2.nq",
+  "graphs": [
+      "http://mu.semte.ch/application"
+  ],
+  "graphRegexes": ["http://mu.semte.ch/vocabularies/ext/tabId"]
+}
