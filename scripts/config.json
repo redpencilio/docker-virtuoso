@@ -29,6 +29,22 @@
         "script": "virtuoso/maintenance.sh",
         "join_networks": true
       }
+    },
+    {
+      "documentation": {
+        "command": "create-void-description",
+        "description": "Create a VoID structural data description.\n Parameters:\n  sparql_endpoint: default http://triplestore:8890/sparql\n  graph: default http://mu.semte.ch/graphs/public\n  iri-of-void: default http://mu.semte.ch/.well-known/void#",
+        "arguments": ["sparql-endpoint", "graph", "iri-of-void"]
+      },
+      "environment": {
+        "image": "redpencil/void-generator-docker",
+        "interactive": false,
+        "script": "void-generator/generate_void.sh",
+        "join_networks": true
+      },
+      "mounts": {
+          "app": "/project/"
+        }
     }
   ]
 }
