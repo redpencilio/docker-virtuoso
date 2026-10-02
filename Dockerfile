@@ -66,12 +66,21 @@ RUN ./autogen.sh && \
 FROM ubuntu:24.04
 COPY --from=builder /usr/local/virtuoso-opensource /usr/local/virtuoso-opensource
 COPY --from=builder /usr/local/lib/ /usr/local/lib
+RUN chgrp -R 0 /usr/local/virtuoso-opensource/var  && chmod -R g=u /usr/local/virtuoso-opensource/var
+
 RUN apt-get update && apt-get install -y libssl-dev crudini
+
+# Use the upstream default config, with plugins disabled and SPARQL query limits restored
+RUN mv /usr/local/virtuoso-opensource/var/lib/virtuoso/db/virtuoso.ini /virtuoso.ini && \
+    for key in $(crudini --get /virtuoso.ini Plugins | grep -E '^Load[0-9]+$'); do \
+        crudini --del /virtuoso.ini Plugins "$key"; \
+    done && \
+    crudini --set /virtuoso.ini SPARQL ResultSetMaxRows 10000 && \
+    crudini --set /virtuoso.ini SPARQL MaxConstructTriples 10000 && \
+    crudini --set /virtuoso.ini SPARQL MaxQueryCostEstimationTime 400 && \
+    crudini --set /virtuoso.ini SPARQL MaxQueryExecutionTime 60
 # Add Virtuoso bin to the PATH
 ENV PATH=/usr/local/virtuoso-opensource/bin/:$PATH
-
-# Add Virtuoso config
-COPY virtuoso.ini /virtuoso.ini
 
 # Add sql scripts
 COPY dump_nquads_procedure.sql /docker-virtuoso/dump_nquads_procedure.sql
@@ -79,6 +88,7 @@ COPY add_cors.sql /docker-virtuoso/add_cors.sql
 
 # Add Virtuoso log cleaning script
 COPY clean-logs.sh /clean-logs.sh
+RUN chmod +x /clean-logs.sh
 
 # Add startup script
 COPY virtuoso.sh /virtuoso.sh

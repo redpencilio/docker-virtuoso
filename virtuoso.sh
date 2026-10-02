@@ -1,21 +1,19 @@
 #!/bin/bash
-SETTINGS_DIR=/settings
-mkdir -p $SETTINGS_DIR
+
+stop_virtuoso() {
+  local pid
+  pid=$(pgrep -x virtuoso-t) || return 0
+  kill "$pid"
+  while kill -0 "$pid" 2>/dev/null; do sleep 1; done
+}
 
 cd /data
-
 mkdir -p dumps
+[ -f ./virtuoso.ini ] || cp /virtuoso.ini .
 
-if [ ! -f ./virtuoso.ini ];
-then
-  mv /virtuoso.ini . 2>/dev/null
-fi
+cp /clean-logs.sh . 2>/dev/null
 
-chmod +x /clean-logs.sh
-mv /clean-logs.sh . 2>/dev/null
-
-if [ ! -f "$SETTINGS_DIR/.config_set" ];
-then
+if printenv | grep -q '^VIRT_'; then
   echo "Converting environment variables to ini file"
   printenv | grep -P "^VIRT_" | while read setting
   do
@@ -25,7 +23,6 @@ then
     echo "Registering $section[$key] to be $value"
     crudini --set virtuoso.ini $section $key "$value"
   done
-  echo "`date +%Y-%m%-dT%H:%M:%S%:z`" >  $SETTINGS_DIR/.config_set
   echo "Finished converting environment variables to ini file"
 fi
 
@@ -53,7 +50,7 @@ then
   if [ "$DBA_PASSWORD" ]; then echo "user_set_password('dba', '$DBA_PASSWORD');" >> /tmp/sql-query.sql ; fi
   if [ "$SPARQL_UPDATE" = "true" ]; then echo "GRANT SPARQL_UPDATE to \"SPARQL\";" >> /tmp/sql-query.sql ; fi
   virtuoso-t +configfile /tmp/virtuoso.ini +wait && isql-v -U dba -P dba < /docker-virtuoso/dump_nquads_procedure.sql && isql-v -U dba -P dba < /tmp/sql-query.sql
-  kill "$(ps aux | grep '[v]irtuoso-t' | awk '{print $2}')"
+  stop_virtuoso
   echo "`date +%Y-%m-%dT%H:%M:%S%:z`" >  .dba_pwd_set
 fi
 
@@ -76,7 +73,7 @@ then
     echo "WAIT_FOR_CHILDREN; " >> /tmp/load_data.sql    
     echo "$(cat /tmp/load_data.sql)"
     virtuoso-t +configfile /tmp/virtuoso.ini +wait && isql-v -U dba -P "$VIRTUOSO_DB_PASSWORD" < /tmp/load_data.sql
-    kill $(ps aux | grep '[v]irtuoso-t' | awk '{print $2}')
+    stop_virtuoso
     echo "`date +%Y-%m-%dT%H:%M:%S%:z`" > .data_loaded
 fi
 
@@ -86,6 +83,7 @@ then
     echo "DB.DBA.RDF_DEFAULT_USER_PERMS_SET ('nobody', 7);" > /tmp/sql-query.sql
     echo "shutdown();" >> /tmp/sql-query.sql
     virtuoso-t +configfile /tmp/virtuoso.ini +wait && isql-v -U dba -P "$VIRTUOSO_DB_PASSWORD" < /tmp/sql-query.sql
+    stop_virtuoso
     rm /tmp/sql-query.sql
 fi
 
@@ -94,7 +92,7 @@ if [ ! -z "$ENABLE_CORS" ];
 then
     echo "enabling cors on SPARQL endpoint"
     virtuoso-t +configfile /tmp/virtuoso.ini +wait && isql-v -U dba -P "$VIRTUOSO_DB_PASSWORD" < /docker-virtuoso/add_cors.sql
-    kill $(ps aux | grep '[v]irtuoso-t' | awk '{print $2}')
+    stop_virtuoso
 fi
 
 rm /tmp/virtuoso.ini
