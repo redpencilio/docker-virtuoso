@@ -29,6 +29,22 @@
         "script": "virtuoso/maintenance.sh",
         "join_networks": true
       }
+    },
+    {
+      "documentation": {
+        "command": "sparql",
+        "description": "Execute the SPARQL query in a file under data/db/queries.\n Parameters:\n  file-name: name of the file in data/db/queries",
+        "arguments": ["file-name"]
+      },
+      "environment": {
+        "image": "redpencil/virtuoso",
+        "interactive": false,
+        "script": "virtuoso/sparql.sh",
+        "join_networks": true
+      },
+      "mounts": {
+          "app": "/project/"
+        }
     }
   ]
 }
