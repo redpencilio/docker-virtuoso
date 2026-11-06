@@ -33,8 +33,8 @@
     {
       "documentation": {
         "command": "sparql",
-        "description": "Execute the SPARQL query in a file under data/db/queries.\n Parameters:\n  file-name: name of the file in data/db/queries",
-        "arguments": ["file-name"]
+        "description": "Execute the SPARQL query in a file under data/db/queries.\n Parameters:\n  file-name: name of the file in data/db/queries\n  hostname: default triplestore\n  username: default dba\n  password: default dba",
+        "arguments": ["file-name", "hostname", "username", "password"]
       },
       "environment": {
         "image": "redpencil/virtuoso",
