@@ -29,6 +29,21 @@
         "script": "virtuoso/maintenance.sh",
         "join_networks": true
       }
+    },
+    {
+      "documentation": {
+        "command": "reset",
+        "description": "Remove the database and its startup markers, the database is created again on the next startup of the triplestore.\n Parameters:\n  --keep-data: only remove the startup markers",
+        "arguments": []
+      },
+      "environment": {
+        "image": "redpencil/virtuoso",
+        "interactive": true,
+        "script": "virtuoso/reset.sh"
+      },
+      "mounts": {
+        "app": "/project/"
+      }
     }
   ]
 }

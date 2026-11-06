@@ -62,7 +62,7 @@ A backup stored in `data/db/backups` can be restored via a separate container or
 The existing database data must be removed before restoring a backup:
 
 ```sh
-rm data/db/virtuoso.{db,trx,pxa} data/db/virtuoso-temp.db data/db/.dba_pwd_set data/db/.backup_restored
+mu script triplestore reset
 ```
 
 Caveat: the restore commands take a backup prefix, which is the whole filename up to (but not including) the ending number and filename extension. For example, for a backup containing the file `virtuoso_backup_240822T0200-101.bp`, the prefix is `virtuoso_backup_240822T0200-`.
@@ -112,10 +112,10 @@ Quads can be loaded automatically on startup, or manually.
 
 By default, any data put in the `toLoad` directory in the Virtuoso database folder (`./data/db/toLoad`) is automatically loaded into Virtuoso on the first startup of the Docker container.
 
-The load only runs on the initial start of the container. To trigger it again on the next startup, remove the `.data_loaded` marker and restart the container:
+The load only runs on the initial start of the container. To run it again on the next startup, remove the `.data_loaded` marker and restart:
 
 ```sh
-rm data/db/.data_loaded
+mu script triplestore reset --keep-data
 docker compose restart triplestore
 ```
 
@@ -183,7 +183,7 @@ mv data/db/dumps/* data/db/toLoad
 **4. Remove the old database.**
 
 ```sh
-rm -f data/db/virtuoso.{db,trx,pxa} data/db/virtuoso-temp.db data/db/.data_loaded data/db/.dba_pwd_set
+mu script triplestore reset
 ```
 
 Consider truncating or removing `data/db/virtuoso.log` as well.
